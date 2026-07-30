@@ -13,10 +13,9 @@ pipeline {
         stage('Pull Code from GitHub') {
             steps {
                 git(
-                    url: 'https://github.com/your-username/your-repository.git',
-                    branch: 'main',
-                    credentialsId: "${GITHUB_CREDENTIALS}"
-                )
+                   url: 'https://github.com/sarakhan481/my-project.git',
+    branch: 'main',
+    credentialsId: 'github-credentialll
             }
         }
 
