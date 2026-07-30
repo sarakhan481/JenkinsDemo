@@ -1,9 +1,10 @@
+
 pipeline {
     agent any
 
     environment {
         IMAGE_NAME = "sara481khan/jenkinsdemo"
-        PATH = "/usr/bin:/usr/local/bin:${env.PATH}"
+        PATH = "/usr/local/bin:/usr/bin:${env.PATH}"
     }
 
     stages {
@@ -17,19 +18,15 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo 'Checking Jenkins environment...'
-                sh 'echo "PATH=$PATH"'
-                sh 'whoami'
-                sh 'which docker || true'
-                sh 'ls -l /usr/bin/docker || true'
-                sh '/usr/bin/docker --version || true'
+                echo 'Building Docker image...'
+                sh '/usr/local/bin/docker build -t $IMAGE_NAME .'
             }
         }
 
         stage('Push Image to Docker Hub') {
             steps {
                 echo 'Pushing Docker image to Docker Hub...'
-                sh '/usr/bin/docker push $IMAGE_NAME'
+                sh '/usr/local/bin/docker push $IMAGE_NAME'
             }
         }
     }
