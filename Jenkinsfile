@@ -2,40 +2,47 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "sara481khan/jenkinsdemo"
+        DOCKER_IMAGE = "your-dockerhub-username/your-image-name"
+        DOCKER_CREDENTIALS = "dockerhub-credential"
+        GITHUB_CREDENTIALS = "github-credential"
     }
 
     stages {
 
+        // Stage 1: Pull code from GitHub
         stage('Pull Code from GitHub') {
             steps {
-                echo 'Pulling code from GitHub...'
-                checkout scm
+                git(
+                    url: 'https://github.com/your-username/your-repository.git',
+                    branch: 'main',
+                    credentialsId: "${GITHUB_CREDENTIALS}"
+                )
             }
         }
 
+
+        // Stage 2: Build Docker Image
         stage('Build Docker Image') {
             steps {
-                sh 'docker version'
-                sh 'docker build -t $IMAGE_NAME .'
+                script {
+                    docker.build("${DOCKER_IMAGE}")
+                }
             }
         }
 
+
+        // Stage 3: Push Image to Docker Hub
         stage('Push Image to Docker Hub') {
             steps {
-                sh 'docker login'
-                sh 'docker push $IMAGE_NAME'
+                script {
+                    docker.withRegistry(
+                        'https://index.docker.io/v1/',
+                        "${DOCKER_CREDENTIALS}"
+                    ) {
+                        docker.image("${DOCKER_IMAGE}").push()
+                    }
+                }
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully.'
-        }
-
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
