@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         GITHUB_CREDENTIALS = "github-credentialll"
-        DOCKER_IMAGE = "your-dockerhub-username/your-image-name"
-        DOCKER_CREDENTIALS = "dockerhub-credential"
+        DOCKER_IMAGE = "sara481khan/jenkinsdemo"
+        DOCKER_CREDENTIALS = "dockerhub-creds"
     }
 
     stages {
@@ -12,7 +12,7 @@ pipeline {
         stage('Pull Code from GitHub') {
             steps {
                 git(
-                    url: 'https://github.com/sarakhan481/my-project.git',
+                    url: 'https://github.com/sarakhan481/jenkinsDemo.git',
                     branch: 'main',
                     credentialsId: "${GITHUB_CREDENTIALS}"
                 )
@@ -34,10 +34,20 @@ pipeline {
                         'https://index.docker.io/v1/',
                         "${DOCKER_CREDENTIALS}"
                     ) {
-                        docker.image("${DOCKER_IMAGE}").push()
+                        docker.image("${DOCKER_IMAGE}").push("latest")
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
