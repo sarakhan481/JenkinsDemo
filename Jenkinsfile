@@ -17,8 +17,12 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                sh '/usr/bin/docker build -t $IMAGE_NAME .'
+                echo 'Checking Jenkins environment...'
+                sh 'echo "PATH=$PATH"'
+                sh 'whoami'
+                sh 'which docker || true'
+                sh 'ls -l /usr/bin/docker || true'
+                sh '/usr/bin/docker --version || true'
             }
         }
 
