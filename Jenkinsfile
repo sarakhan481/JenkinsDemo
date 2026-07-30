@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         IMAGE_NAME = "sara481khan/jenkinsdemo"
-        PATH = "/usr/local/bin:/usr/bin:${env.PATH}"
     }
 
     stages {
@@ -17,15 +16,15 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                sh '/usr/local/bin/docker build -t $IMAGE_NAME .'
+                sh 'docker version'
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
         stage('Push Image to Docker Hub') {
             steps {
-                echo 'Pushing Docker image to Docker Hub...'
-                sh '/usr/local/bin/docker push $IMAGE_NAME'
+                sh 'docker login'
+                sh 'docker push $IMAGE_NAME'
             }
         }
     }
@@ -34,6 +33,7 @@ pipeline {
         success {
             echo 'Pipeline completed successfully.'
         }
+
         failure {
             echo 'Pipeline failed.'
         }
